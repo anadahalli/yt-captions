@@ -12,6 +12,12 @@ insert = (auth_token, video_id, caption_name, caption_file, caption_language, ca
 
     return callback new Error('Caption file not found') if not fs.existsSync(caption_file)
 
+    body =
+        snippet:
+            videoId: video_id
+            name: caption_name
+            language: caption_language
+
     options =
         method: 'POST'
         url: 'https://www.googleapis.com/upload/youtube/v3/captions'
@@ -24,21 +30,18 @@ insert = (auth_token, video_id, caption_name, caption_file, caption_language, ca
             data: [
                 {
                     'Content-Type': 'application/json'
-                    body:
-                        snippet:
-                            videoId: video_id
-                            name: caption_name
-                            language: caption_language
+                    body: JSON.stringify body
                 }, {
                     'Content-Type': 'text/plain'
                     body: fs.createReadStream caption_file
                 }
             ]
+        json: true
 
     request options, (error, response, body) ->
         return callback error if error?
 
-        return callback new Error(response.error.message) if response.statusCode != 200
+        return callback new Error(body.error.message) if response.statusCode != 200
         
         return callback()
 
