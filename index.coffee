@@ -21,20 +21,18 @@ insert = (auth_token, video_id, caption_name, caption_file, caption_language, ca
     options =
         method: 'POST'
         url: 'https://www.googleapis.com/upload/youtube/v3/captions'
-        qs: part: 'snippet'
+        qs:
+            part: 'snippet'
+            uploadType: 'multipart'
+            alt: 'json'
         headers:
             'Authorization': "Bearer #{auth_token}"
             'Content-Length': fs.statSync(caption_file).size
         multipart:
             chunked: true
             data: [
-                {
-                    'Content-Type': 'application/json'
-                    body: JSON.stringify body
-                }, {
-                    'Content-Type': 'text/plain'
-                    body: fs.createReadStream caption_file
-                }
+                { 'Content-Type': 'application/json', body: JSON.stringify(body) },
+                { 'Content-Type': 'text/plain', body: fs.createReadStream(caption_file, 'utf8') }
             ]
         json: true
 

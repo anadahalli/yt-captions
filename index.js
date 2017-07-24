@@ -36,7 +36,9 @@ insert = function(auth_token, video_id, caption_name, caption_file, caption_lang
     method: 'POST',
     url: 'https://www.googleapis.com/upload/youtube/v3/captions',
     qs: {
-      part: 'snippet'
+      part: 'snippet',
+      uploadType: 'multipart',
+      alt: 'json'
     },
     headers: {
       'Authorization': "Bearer " + auth_token,
@@ -50,7 +52,7 @@ insert = function(auth_token, video_id, caption_name, caption_file, caption_lang
           body: JSON.stringify(body)
         }, {
           'Content-Type': 'text/plain',
-          body: fs.createReadStream(caption_file)
+          body: fs.createReadStream(caption_file, 'utf8')
         }
       ]
     },
