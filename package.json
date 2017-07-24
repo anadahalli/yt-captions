@@ -1,7 +1,7 @@
 {
   "name": "yt-captions",
-  "version": "0.0.1",
-  "description": "Update Youtube captions",
+  "version": "1.0.0",
+  "description": "Insert caption to YouTube video using YouTube Data API",
   "main": "index.js",
   "scripts": {
     "test": "mocha"
@@ -11,6 +11,10 @@
     "captions"
   ],
   "author": "Ashwath Nadahalli <ashwath@scribie.com>",
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/anadahalli/yt-captions.git"
+  },
   "license": "ISC",
   "devDependencies": {
     "chai": "^4.1.0",
