@@ -63,7 +63,7 @@ insert = function(auth_token, video_id, caption_name, caption_file, caption_lang
       return callback(error);
     }
     if (response.statusCode !== 200) {
-      return callback(new Error(body.error.message));
+      return callback(new Error(body.error.message), body.error);
     }
     return callback();
   });

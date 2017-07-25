@@ -76,23 +76,28 @@ describe('yt-captions', function() {
     it('should have all the request options set', function(done) {
       yt.__set__({
         'request': function(options, callback) {
-          var fs, snippet, stream;
+          var body, fs, qs, stream;
           chai.expect(options.method).to.equal('POST');
           chai.expect(options.url).to.equal('https://www.googleapis.com/upload/youtube/v3/captions');
-          chai.expect(options.qs).to.deep.equal({
-            part: 'snippet'
-          });
+          qs = {
+            part: 'snippet',
+            uploadType: 'multipart',
+            alt: 'json'
+          };
+          chai.expect(options.qs).to.deep.equal(qs);
           chai.expect(options.headers['Authorization']).to.equal('Bearer auth_token');
           chai.expect(options.headers['Content-Length']).to.equal(100);
           chai.expect(options.multipart.chunked).to.equal(true);
           chai.expect(options.multipart.data[0]['Content-Type']).to.equal('application/json');
           chai.expect(options.multipart.data[1]['Content-Type']).to.equal('text/plain');
-          snippet = {
-            videoId: 'video_id',
-            name: 'caption_name',
-            language: 'caption_language'
+          body = {
+            snippet: {
+              videoId: 'video_id',
+              name: 'caption_name',
+              language: 'caption_language'
+            }
           };
-          chai.expect(options.multipart.data[0]['body'].snippet).to.deep.equal(snippet);
+          chai.expect(options.multipart.data[0]['body']).to.deep.equal(JSON.stringify(body));
           fs = yt.__get__('fs');
           stream = fs.createReadStream('caption_file');
           chai.expect(options.multipart.data[1]['body']).to.deep.equal(stream);
@@ -113,85 +118,95 @@ describe('yt-captions', function() {
       });
     });
     it('should return an error if response is 400', function(done) {
-      var response;
-      response = {
-        statusCode: 400,
+      var body;
+      body = {
         error: {
+          code: 400,
           message: 'contentRequired'
         }
       };
       yt.__set__({
         'request': function(options, callback) {
-          return callback(null, response, null);
+          return callback(null, {
+            statusCode: 400
+          }, body);
         }
       });
-      return yt.insert('auth_token', 'video_id', 'caption_name', 'caption_file', 'caption_language', function(error) {
+      return yt.insert('auth_token', 'video_id', 'caption_name', 'caption_file', 'caption_language', function(error, body) {
         chai.expect(error).to.be.an["instanceof"](Error);
+        chai.expect(body.code).to.be.equal(400);
         return done();
       });
     });
     it('should return an error if response is 403', function(done) {
-      var response;
-      response = {
-        statusCode: 403,
+      var body;
+      body = {
         error: {
+          code: 403,
           message: 'forbidden'
         }
       };
       yt.__set__({
         'request': function(options, callback) {
-          return callback(null, response, null);
+          return callback(null, {
+            statusCode: 403
+          }, body);
         }
       });
-      return yt.insert('auth_token', 'video_id', 'caption_name', 'caption_file', 'caption_language', function(error) {
+      return yt.insert('auth_token', 'video_id', 'caption_name', 'caption_file', 'caption_language', function(error, body) {
         chai.expect(error).to.be.an["instanceof"](Error);
+        chai.expect(body.code).to.be.equal(403);
         return done();
       });
     });
     it('should return an error if response is 404', function(done) {
-      var response;
-      response = {
-        statusCode: 404,
+      var body;
+      body = {
         error: {
+          code: 404,
           message: 'videoNotFound'
         }
       };
       yt.__set__({
         'request': function(options, callback) {
-          return callback(null, response, null);
+          return callback(null, {
+            statusCode: 404
+          }, body);
         }
       });
-      return yt.insert('auth_token', 'video_id', 'caption_name', 'caption_file', 'caption_language', function(error) {
+      return yt.insert('auth_token', 'video_id', 'caption_name', 'caption_file', 'caption_language', function(error, body) {
         chai.expect(error).to.be.an["instanceof"](Error);
+        chai.expect(body.code).to.be.equal(404);
         return done();
       });
     });
     it('should return an error if response is 409', function(done) {
-      var response;
-      response = {
-        statusCode: 404,
+      var body;
+      body = {
         error: {
+          code: 409,
           message: 'captionExists'
         }
       };
       yt.__set__({
         'request': function(options, callback) {
-          return callback(null, response, null);
+          return callback(null, {
+            statusCode: 409
+          }, body);
         }
       });
-      return yt.insert('auth_token', 'video_id', 'caption_name', 'caption_file', 'caption_language', function(error) {
+      return yt.insert('auth_token', 'video_id', 'caption_name', 'caption_file', 'caption_language', function(error, body) {
         chai.expect(error).to.be.an["instanceof"](Error);
+        chai.expect(body.code).to.be.equal(409);
         return done();
       });
     });
     return it('should return successfully', function(done) {
-      var response;
-      response = {
-        statusCode: 200
-      };
       yt.__set__({
         'request': function(options, callback) {
-          return callback(null, response, null);
+          return callback(null, {
+            statusCode: 200
+          }, null);
         }
       });
       return yt.insert('auth_token', 'video_id', 'caption_name', 'caption_file', 'caption_language', function(error) {

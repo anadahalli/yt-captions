@@ -39,7 +39,7 @@ insert = (auth_token, video_id, caption_name, caption_file, caption_language, ca
     request options, (error, response, body) ->
         return callback error if error?
 
-        return callback new Error(body.error.message) if response.statusCode != 200
+        return callback new Error(body.error.message), body.error if response.statusCode != 200
         
         return callback()
 
