@@ -1,6 +1,6 @@
 {
   "name": "yt-captions",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Insert caption to YouTube video using YouTube Data API",
   "main": "index.js",
   "scripts": {
