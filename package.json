@@ -1,6 +1,6 @@
 {
   "name": "yt-captions",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Insert caption to YouTube video using YouTube Data API",
   "main": "index.js",
   "scripts": {
@@ -11,9 +11,9 @@
     "captions"
   ],
   "author": "Ashwath Nadahalli <ashwath@scribie.com>",
-  "repository" : {
-    "type" : "git",
-    "url" : "https://github.com/anadahalli/yt-captions.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anadahalli/yt-captions.git"
   },
   "license": "MIT",
   "devDependencies": {
